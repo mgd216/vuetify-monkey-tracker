@@ -5,7 +5,7 @@ import router from './router'
 import './plugins'
 import './firebaseActions'
 
-const fb = require('./firebaseConfig.js')
+import fb  from './firebaseConfig.js'
 
 Vue.config.productionTip = false
 

@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <v-navigation-drawer
+     v-if="isLoggedIn"
       persistent
       :mini-variant="miniVariant"
       :clipped="clipped"
@@ -12,7 +13,7 @@
       <v-list>
         <v-list-tile>
           <v-list-tile-action>
-            <v-icon>home</v-icon>
+            <fa-icon icon="home" />
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Home</v-list-tile-title>
@@ -21,7 +22,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app :clipped-left="clipped">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon v-if="isLoggedIn" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <!-- <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
       </v-btn>-->
@@ -34,6 +35,7 @@
       <img src="@/assets/bd-logo.png" height="40px" alt>
       <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
+      <ProfileMenu />
     </v-toolbar>
     <v-content>
       <router-view/>
@@ -47,7 +49,14 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+import ProfileMenu from '@/components/layout/ProfileMenu.vue'
+
 export default {
+  name: 'App',
+  components: {
+    ProfileMenu
+  },
   data () {
     return {
       clipped: false,
@@ -59,6 +68,8 @@ export default {
       title: 'Monkey Tracker'
     }
   },
-  name: 'App'
+  computed: {
+    ...mapGetters(["isLoggedIn"])
+  }
 }
 </script>

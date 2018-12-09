@@ -5,17 +5,32 @@
         <img src="@/assets/bd-logo.png" height="40px" alt>
         <span class="title">Monkey Tracker</span>
       </v-card-title>
-      <v-form>
-        <v-text-field prepend-icon="email" name="Email" label="Email" v-model="email"></v-text-field>
+      <v-form class="pa-2">
         <v-text-field
-          prepend-icon="lock"
+          name="Email"
+          label="Email"
+          v-model="form.email"
+          required
+          :error-messages="emailErrors"
+          @input="$v.form.email.$touch()"
+         @blur="$v.form.email.$touch()"
+        >
+          <fa-icon slot="prepend" icon="envelope"/>
+        </v-text-field>
+        <v-text-field
           name="Password"
           label="Password"
           type="password"
-          v-model="password"
-        ></v-text-field>
+          v-model="form.password"
+          required
+          :error-messages="passwordErrors"
+          @input="$v.form.password.$touch()"
+         @blur="$v.form.password.$touch()"
+        >
+          <fa-icon slot="prepend" icon="lock"/>
+        </v-text-field>
         <v-card-actions>
-          <v-btn primary large block>Login</v-btn>
+          <v-btn :disabled="$v.form.$invalid" primary large block @click.prevent="login()">Login</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -23,24 +38,56 @@
 </template>
 
 <script>
+import { email, required } from "vuelidate/lib/validators";
+import { mapActions } from "vuex";
 import fb from "@/firebaseConfig.js";
 
 export default {
   name: "Login",
   data() {
     return {
-      email: "",
-      password: ""
+      form: {
+        email: "",
+        password: ""
+      }
     };
   },
+  validations: {
+    form: {
+      email: {
+        email,
+        required
+      },
+      password: {
+        required
+      }
+    }
+  },
+  computed: {
+    emailErrors: function() {
+      const errors = [];
+      if (!this.$v.form.email.$dirty) return errors;
+      !this.$v.form.email.required && errors.push("Email is required.");
+      !this.$v.form.email.email && errors.push("Email form incorrect, must be myname@gmail.com.");
+      return errors;
+    },
+    passwordErrors: function() {const errors = [];
+      if (!this.$v.form.password.$dirty) return errors;
+      !this.$v.form.password.required && errors.push("Password is required.");
+      return errors;
+      }
+  },
   methods: {
+      ...mapActions(["updateCurrentUser", "fetchUserProfile"]),
     login() {
+      this.$v.form.$touch();
+      if (this.$v.form.$pending || this.$v.form.$error) return;
       fb.auth
-        .signInWithEmailAndPassword(this.email, this.password)
+        .signInWithEmailAndPassword(this.form.email, this.form.password)
         .then(user => {
-          this.$store.commit("setCurrentUser", user);
-          this.$store.dispatch("fetchUserProfile");
-          this.$router.push("/dashboard");
+          this.updateCurrentUser(user);
+          // this.fetchUserProfile();
+          this.$router.push({name: 'Home'});
         })
         .catch(err => {
           console.log(err);

@@ -29,7 +29,7 @@ const postsCollection = db.collection("posts");
 const commentsCollection = db.collection("comments");
 const likesCollection = db.collection("likes");
 
-export {
+export default {
   db,
   auth,
   currentUser,

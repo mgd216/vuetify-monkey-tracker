@@ -1,1 +1,5 @@
+import './fontAwesome'
+import './fontAwesomeIcon'
+import './sweetAlert'
+import './vuelidate'
 import './vuetify'
