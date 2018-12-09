@@ -11,7 +11,8 @@
       app
     >
       <v-list>
-        <v-list-tile>
+
+        <v-list-tile to="Home">
           <v-list-tile-action>
             <fa-icon icon="home" />
           </v-list-tile-action>
@@ -19,6 +20,16 @@
             <v-list-tile-title>Home</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+
+        <v-list-tile to="Map">
+          <v-list-tile-action>
+            <fa-icon icon="globe" />
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Map</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app :clipped-left="clipped">

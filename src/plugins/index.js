@@ -1,5 +1,6 @@
 import './fontAwesome'
 import './fontAwesomeIcon'
+import './googleMaps'
 import './sweetAlert'
 import './vuelidate'
 import './vuetify'

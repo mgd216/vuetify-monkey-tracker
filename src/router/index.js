@@ -4,6 +4,7 @@ import firebase from "firebase";
 
 import Home from "@/views/Home";
 import Login from "@/views/Login";
+import Map from "@/views/Map";
 
 Vue.use(Router);
 
@@ -23,6 +24,14 @@ const router = new Router({
       path: "/home",
       name: "Home",
       component: Home,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/map",
+      name: "Map",
+      component: Map,
       meta: {
         requiresAuth: true
       }
