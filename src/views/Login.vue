@@ -1,45 +1,47 @@
 <template>
-  <v-container style="position: relative;top: 13%;" class="text-xs-center">
-    <v-card flat max-width="400">
-      <v-card-title primary-title>
-        <img src="@/assets/bd-logo.png" height="40px" alt>
-        <span class="title">Monkey Tracker</span>
-      </v-card-title>
-      <v-form class="pa-2">
-        <v-text-field
-          name="Email"
-          label="Email"
-          v-model="form.email"
-          required
-          :error-messages="emailErrors"
-          @input="$v.form.email.$touch()"
-          @blur="$v.form.email.$touch()"
-        >
-          <fa-icon slot="prepend" icon="envelope"/>
-        </v-text-field>
-        <v-text-field
-          name="Password"
-          label="Password"
-          type="password"
-          v-model="form.password"
-          required
-          :error-messages="passwordErrors"
-          @input="$v.form.password.$touch()"
-          @blur="$v.form.password.$touch()"
-        >
-          <fa-icon slot="prepend" icon="lock"/>
-        </v-text-field>
-        <v-card-actions>
-          <v-btn
-            :disabled="$v.form.$invalid"
-            primary
-            large
-            block
-            @click.prevent="submitLogin()"
-          >Login</v-btn>
-        </v-card-actions>
-      </v-form>
-    </v-card>
+  <v-container fluid fill-height>
+    <v-layout row align-center justify-center>
+      <v-card flat max-width="400">
+        <v-card-title primary-title>
+          <img src="@/assets/bd-logo.png" height="40px" alt>
+          <span class="title">Monkey Tracker</span>
+        </v-card-title>
+        <v-form class="pa-2">
+          <v-text-field
+            name="Email"
+            label="Email"
+            v-model="form.email"
+            required
+            :error-messages="emailErrors"
+            @input="$v.form.email.$touch()"
+            @blur="$v.form.email.$touch()"
+          >
+            <fa-icon slot="prepend" icon="envelope"/>
+          </v-text-field>
+          <v-text-field
+            name="Password"
+            label="Password"
+            type="password"
+            v-model="form.password"
+            required
+            :error-messages="passwordErrors"
+            @input="$v.form.password.$touch()"
+            @blur="$v.form.password.$touch()"
+          >
+            <fa-icon slot="prepend" icon="lock"/>
+          </v-text-field>
+          <v-card-actions>
+            <v-btn
+              :disabled="$v.form.$invalid"
+              primary
+              large
+              block
+              @click.prevent="submitLogin()"
+            >Login</v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-layout>
   </v-container>
 </template>
 

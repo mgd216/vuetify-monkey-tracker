@@ -14,13 +14,13 @@ const getters = {
 }
 
 const actions = {
-	login({ commit }, opts) {
+	login({ commit, dispatch }, opts) {
 		fb.auth
 			.signInWithEmailAndPassword(opts.email, opts.password)
-			.then(user => {
-				commit('SET_CURRENT_USER', user)
-				// this.fetchUserProfile();
-				router.push({ name: 'Home' })
+			.then(response => {
+				commit('SET_CURRENT_USER', response.user)
+				dispatch('fetchUserProfile')
+				dispatch('fetchMonkeys')
 			})
 			.catch(err => {
 				toaster.error(err)
@@ -40,48 +40,57 @@ const actions = {
 			})
 	},
 
-	fetchUserProfile({ commit, state }) {
+	createUserProfile({ dispatch, state }, opts) {
 		fb.usersCollection
 			.doc(state.currentUser.uid)
-			.get()
-			.then(res => {
-				commit('SET_USER_PROFILE', res.data())
+			.set({
+				firstName: opts.firstName,
+				lastName: opts.lastName,
+			})
+			.then(() => {
+				dispatch('fetchUserProfile')
 			})
 			.catch(err => {
 				toaster.error(err)
 			})
 	},
 
-	updateProfile({ state }, data) {
-		let name = data.name
-		let title = data.title
-
+	fetchUserProfile({ commit, dispatch, state }) {
 		fb.usersCollection
 			.doc(state.currentUser.uid)
-			.update({ name, title })
+			.get()
+			.then(res => {
+				if (res.exists) {
+					commit('SET_USER_PROFILE', res.data())
+					router.push({ name: 'Home' })
+				} else {
+					dispatch('createUserProfile', { firstName: '', lastName: '' })
+				}
+			})
+			.catch(err => {
+				toaster.error(err)
+			})
+	},
+
+	resetPassword({ commit }, email) {
+		fb.auth
+			.sendPasswordResetEmail(email)
 			.then(() => {
-				// update all posts by user to reflect new name
-				fb.postsCollection
-					.where('userId', '==', state.currentUser.uid)
-					.get()
-					.then(docs => {
-						docs.forEach(doc => {
-							fb.postsCollection.doc(doc.id).update({
-								userName: name,
-							})
-						})
-					})
-				// update all comments by user to reflect new name
-				fb.commentsCollection
-					.where('userId', '==', state.currentUser.uid)
-					.get()
-					.then(docs => {
-						docs.forEach(doc => {
-							fb.commentsCollection.doc(doc.id).update({
-								userName: name,
-							})
-						})
-					})
+				toaster.success(`Password reset sent to: ${email}`)
+				commit('SET_CURRENT_USER', null)
+			})
+			.catch(err => {
+				toaster.error(err)
+			})
+	},
+
+	updateProfile({ dispatch, state }, opts) {
+		fb.usersCollection
+			.doc(state.currentUser.uid)
+			.update({ firstName: opts.firstName, lastName: opts.lastName })
+			.then(() => {
+				dispatch('fetchUserProfile')
+				toaster.success('Profile Updated.')
 			})
 			.catch(err => {
 				toaster.error(err)
