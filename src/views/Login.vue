@@ -13,7 +13,7 @@
           required
           :error-messages="emailErrors"
           @input="$v.form.email.$touch()"
-         @blur="$v.form.email.$touch()"
+          @blur="$v.form.email.$touch()"
         >
           <fa-icon slot="prepend" icon="envelope"/>
         </v-text-field>
@@ -25,12 +25,18 @@
           required
           :error-messages="passwordErrors"
           @input="$v.form.password.$touch()"
-         @blur="$v.form.password.$touch()"
+          @blur="$v.form.password.$touch()"
         >
           <fa-icon slot="prepend" icon="lock"/>
         </v-text-field>
         <v-card-actions>
-          <v-btn :disabled="$v.form.$invalid" primary large block @click.prevent="login()">Login</v-btn>
+          <v-btn
+            :disabled="$v.form.$invalid"
+            primary
+            large
+            block
+            @click.prevent="submitLogin()"
+          >Login</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -40,7 +46,6 @@
 <script>
 import { email, required } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
-import fb from "@/firebaseConfig.js";
 
 export default {
   name: "Login",
@@ -68,30 +73,23 @@ export default {
       const errors = [];
       if (!this.$v.form.email.$dirty) return errors;
       !this.$v.form.email.required && errors.push("Email is required.");
-      !this.$v.form.email.email && errors.push("Email form incorrect, must be myname@gmail.com.");
+      !this.$v.form.email.email &&
+        errors.push("Email form incorrect, must be myname@gmail.com.");
       return errors;
     },
-    passwordErrors: function() {const errors = [];
+    passwordErrors: function() {
+      const errors = [];
       if (!this.$v.form.password.$dirty) return errors;
       !this.$v.form.password.required && errors.push("Password is required.");
       return errors;
-      }
+    }
   },
   methods: {
-      ...mapActions(["updateCurrentUser", "fetchUserProfile"]),
-    login() {
+    ...mapActions(["login"]),
+    submitLogin() {
       this.$v.form.$touch();
       if (this.$v.form.$pending || this.$v.form.$error) return;
-      fb.auth
-        .signInWithEmailAndPassword(this.form.email, this.form.password)
-        .then(user => {
-          this.updateCurrentUser(user);
-          // this.fetchUserProfile();
-          this.$router.push({name: 'Home'});
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.login({ email: this.form.email, password: this.form.password });
     }
   }
 };

@@ -14,24 +14,32 @@ const getters = {
 }
 
 const actions = {
+	login({ commit }, opts) {
+		fb.auth
+			.signInWithEmailAndPassword(opts.email, opts.password)
+			.then(user => {
+				commit('SET_CURRENT_USER', user)
+				// this.fetchUserProfile();
+				router.push({ name: 'Home' })
+			})
+			.catch(err => {
+				toaster.error(err)
+			})
+	},
 
 	logout({ commit }) {
 		fb.auth
 			.signOut()
 			.then(function() {
 				commit('SET_CURRENT_USER', null)
-        commit('SET_USER_PROFILE', {})
-        router.push({name: 'Login'})
+				commit('SET_USER_PROFILE', {})
+				router.push({ name: 'Login' })
 			})
 			.catch(function(err) {
 				toaster.error(err)
 			})
-  },
-  
-	updateCurrentUser({ commit }, user) {
-		commit('SET_CURRENT_USER', user)
-  },
-  
+	},
+
 	fetchUserProfile({ commit, state }) {
 		fb.usersCollection
 			.doc(state.currentUser.uid)
@@ -42,8 +50,8 @@ const actions = {
 			.catch(err => {
 				toaster.error(err)
 			})
-  },
-  
+	},
+
 	updateProfile({ state }, data) {
 		let name = data.name
 		let title = data.title
@@ -78,8 +86,7 @@ const actions = {
 			.catch(err => {
 				toaster.error(err)
 			})
-  },
-  
+	},
 }
 
 const mutations = {
