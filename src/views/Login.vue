@@ -91,7 +91,11 @@ export default {
     submitLogin() {
       this.$v.form.$touch();
       if (this.$v.form.$pending || this.$v.form.$error) return;
-      this.login({ email: this.form.email, password: this.form.password });
+      this.login({ email: this.form.email, password: this.form.password }).then(
+        () => {
+          this.$router.push({ name: "Home" });
+        }
+      );
     }
   }
 };

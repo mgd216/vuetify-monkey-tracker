@@ -23,9 +23,12 @@ const settings = {
 }
 db.settings(settings)
 
-// firebase collections
+// firestore collections
 const usersCollection = db.collection('users')
 const monkeysCollection = db.collection('monkeys')
+
+// storage
+const storage = firebase.storage()
 
 export default {
 	db,
@@ -33,4 +36,5 @@ export default {
 	currentUser,
 	usersCollection,
 	monkeysCollection,
+	storage,
 }

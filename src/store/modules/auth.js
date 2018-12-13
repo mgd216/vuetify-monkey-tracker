@@ -1,30 +1,37 @@
 import fb from '@/firebaseConfig.js'
+import { fetch as fetchPolyfill } from 'whatwg-fetch'
 import router from '@/router'
 import toaster from '@/store/utils/toaster'
 
 const state = {
 	currentUser: null,
 	userProfile: {},
+	userProfileImg: null,
 }
 
 const getters = {
 	currentUser: state => state.currentUser,
 	isLoggedIn: state => !!state.currentUser,
+	userId: state => (state.currentUser ? state.currentUser.uid : null),
 	userProfile: state => state.userProfile,
+	userProfileImg: state => state.userProfileImg,
 }
 
 const actions = {
 	login({ commit, dispatch }, opts) {
-		fb.auth
-			.signInWithEmailAndPassword(opts.email, opts.password)
-			.then(response => {
-				commit('SET_CURRENT_USER', response.user)
-				dispatch('fetchUserProfile')
-				dispatch('fetchMonkeys')
-			})
-			.catch(err => {
-				toaster.error(err)
-			})
+		return new Promise((resolve, reject) => {
+			fb.auth
+				.signInWithEmailAndPassword(opts.email, opts.password)
+				.then(response => {
+					commit('SET_CURRENT_USER', response.user)
+					dispatch('fetchUserProfile')
+					resolve()
+				})
+				.catch(err => {
+					toaster.error(err)
+					reject()
+				})
+		})
 	},
 
 	logout({ commit }) {
@@ -62,7 +69,13 @@ const actions = {
 			.then(res => {
 				if (res.exists) {
 					commit('SET_USER_PROFILE', res.data())
-					router.push({ name: 'Home' })
+					if (res.data().profileImgUrl) {
+						fetchPolyfill(res.data().profileImgUrl).then(res => {
+							const fd = new FormData()
+							fd.set('a', res._bodyBlob)
+							commit('SET_PROFILE_IMG', fd.get('a'))
+						})
+					}
 				} else {
 					dispatch('createUserProfile', { firstName: '', lastName: '' })
 				}
@@ -85,9 +98,15 @@ const actions = {
 	},
 
 	updateProfile({ dispatch, state }, opts) {
+		let up = {
+			firstName: opts.firstName,
+			lastName: opts.lastName,
+			profileImgUrl: opts.profileImgUrl ? opts.profileImgUrl : null,
+		}
+
 		fb.usersCollection
 			.doc(state.currentUser.uid)
-			.update({ firstName: opts.firstName, lastName: opts.lastName })
+			.update(up)
 			.then(() => {
 				dispatch('fetchUserProfile')
 				toaster.success('Profile Updated.')
@@ -95,6 +114,19 @@ const actions = {
 			.catch(err => {
 				toaster.error(err)
 			})
+	},
+
+	updateProfilePhoto({ dispatch, rootGetters }, file) {
+		let storageRef = fb.storage.ref(
+			`${rootGetters.userId}/profilePicture/${file.name}`
+		)
+		storageRef.put(file).then(fileSnapshot => {
+			fileSnapshot.ref.getDownloadURL().then(url => {
+				let up = rootGetters.userProfile
+				up.profileImgUrl = url
+				dispatch('updateProfile', up)
+			})
+		})
 	},
 }
 
@@ -104,6 +136,9 @@ const mutations = {
 	},
 	SET_USER_PROFILE(state, val) {
 		state.userProfile = val
+	},
+	SET_PROFILE_IMG(state, img) {
+		state.userProfileImg = img
 	},
 }
 

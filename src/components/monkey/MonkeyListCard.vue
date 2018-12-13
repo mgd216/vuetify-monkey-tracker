@@ -12,12 +12,20 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "MonkeyListCard",
   computed: {
     ...mapGetters(["monkeys"])
+  },
+  methods: {
+    ...mapActions(["fetchMonkeys"])
+  },
+  created: function() {
+    if (this.monkeys.length === 0) {
+      this.fetchMonkeys();
+    }
   }
 };
 </script>

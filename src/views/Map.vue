@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import MonkeyViewDialog from "@/components/monkey/MonkeyViewDialog.vue";
 
 export default {
@@ -30,6 +30,7 @@ export default {
     ...mapGetters(["monkeys"])
   },
   methods: {
+    ...mapActions(["fetchMonkeys"]),
     geolocate: function() {
       navigator.geolocation.getCurrentPosition(position => {
         this.center = {
@@ -40,6 +41,11 @@ export default {
     },
     showMonkey: function(monkey) {
       this.$refs.monkey_dialog.showDialog(monkey);
+    }
+  },
+  created: function() {
+    if (this.monkeys.length === 0) {
+      this.fetchMonkeys();
     }
   },
   mounted: function() {

@@ -2,39 +2,57 @@
   <v-container fluid>
     <v-slide-y-transition mode="out-in">
       <v-layout column align-center>
-        <v-card>
+        <v-card width="100%" max-width="600px">
           <v-card-title>Update User Profile</v-card-title>
           <v-card-text>
-            <v-form class="pa-2">
-              <v-text-field disabled v-model="email" label="Email"></v-text-field>
-              <v-text-field
-                name="firstName"
-                label="First Name"
-                :counter="20"
-                v-model="form.firstName"
-                :error-messages="firstNameErrors"
-                @input="$v.form.firstName.$touch()"
-                @blur="$v.form.firstName.$touch()"
-              ></v-text-field>
-              <v-text-field
-                name="lastName"
-                label="Last Name"
-                :counter="20"
-                v-model="form.lastName"
-                :error-messages="lastNameErrors"
-                @input="$v.form.lastName.$touch()"
-                @blur="$v.form.lastName.$touch()"
-              ></v-text-field>
-              <v-card-actions>
-                <v-btn
-                  :disabled="$v.form.$invalid"
-                  primary
-                  large
-                  block
-                  @click.prevent="update()"
-                >Update Profile</v-btn>
-              </v-card-actions>
-            </v-form>
+            <v-layout row wrap>
+              <v-flex xs12 md6>
+                <PictureInput
+                  ref="profile_picture"
+                  width="600"
+                  height="600"
+                  margin="16"
+                  accept="image/jpeg, image/png"
+                  size="1"
+                  radius="50"
+                  :prefill="userProfileImg"
+                  button-class="btn"
+                  @change="onChange"
+                ></PictureInput>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-form class="pa-2">
+                  <v-text-field disabled v-model="email" label="Email"></v-text-field>
+                  <v-text-field
+                    name="firstName"
+                    label="First Name"
+                    :counter="20"
+                    v-model="form.firstName"
+                    :error-messages="firstNameErrors"
+                    @input="$v.form.firstName.$touch()"
+                    @blur="$v.form.firstName.$touch()"
+                  ></v-text-field>
+                  <v-text-field
+                    name="lastName"
+                    label="Last Name"
+                    :counter="20"
+                    v-model="form.lastName"
+                    :error-messages="lastNameErrors"
+                    @input="$v.form.lastName.$touch()"
+                    @blur="$v.form.lastName.$touch()"
+                  ></v-text-field>
+                  <v-card-actions>
+                    <v-btn
+                      :disabled="$v.form.$invalid"
+                      primary
+                      large
+                      block
+                      @click.prevent="update()"
+                    >Update Profile</v-btn>
+                  </v-card-actions>
+                </v-form>
+              </v-flex>
+            </v-layout>
           </v-card-text>
         </v-card>
       </v-layout>
@@ -45,9 +63,13 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import { maxLength, minLength } from "vuelidate/lib/validators";
+import PictureInput from "vue-picture-input";
 
 export default {
   name: "Profile",
+  components: {
+    PictureInput
+  },
   data() {
     return {
       form: {
@@ -69,7 +91,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["currentUser", "userProfile"]),
+    ...mapGetters(["currentUser", "userProfile", "userProfileImg"]),
     email: function() {
       return this.currentUser.email;
     },
@@ -93,12 +115,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["updateProfile"]),
+    ...mapActions(["updateProfile", "updateProfilePhoto"]),
     update: function() {
       this.updateProfile({
         firstName: this.form.firstName,
         lastName: this.form.lastName
       });
+    },
+    onChange: function() {
+      this.updateProfilePhoto(this.$refs.profile_picture.file);
     }
   },
   mounted: function() {
