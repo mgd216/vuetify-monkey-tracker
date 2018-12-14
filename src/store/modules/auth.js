@@ -53,6 +53,7 @@ const actions = {
 			.set({
 				firstName: opts.firstName,
 				lastName: opts.lastName,
+				profileImgUrl: null,
 			})
 			.then(() => {
 				dispatch('fetchUserProfile')
@@ -70,6 +71,7 @@ const actions = {
 				if (res.exists) {
 					commit('SET_USER_PROFILE', res.data())
 					if (res.data().profileImgUrl) {
+						//place the image as a file for picture-input component
 						fetchPolyfill(res.data().profileImgUrl).then(res => {
 							const fd = new FormData()
 							fd.set('a', res._bodyBlob)
@@ -101,7 +103,9 @@ const actions = {
 		let up = {
 			firstName: opts.firstName,
 			lastName: opts.lastName,
-			profileImgUrl: opts.profileImgUrl ? opts.profileImgUrl : null,
+		}
+		if (opts.profileImgUrl) {
+			up.profileImgUrl = opts.profileImgUrl
 		}
 
 		fb.usersCollection

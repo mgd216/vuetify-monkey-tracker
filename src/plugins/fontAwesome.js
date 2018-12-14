@@ -1,10 +1,20 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-	faHome,
+	faChevronLeft,
+	faChevronRight,
 	faEnvelope,
+	faHome,
 	faGlobe,
 	faLock,
 	faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faHome, faEnvelope, faGlobe, faLock, faUser)
+library.add(
+	faChevronLeft,
+	faChevronRight,
+	faEnvelope,
+	faHome,
+	faGlobe,
+	faLock,
+	faUser
+)

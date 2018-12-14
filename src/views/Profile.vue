@@ -3,7 +3,9 @@
     <v-slide-y-transition mode="out-in">
       <v-layout column align-center>
         <v-card width="100%" max-width="600px">
-          <v-card-title>Update User Profile</v-card-title>
+          <v-card-title>
+            <span class="title">Update User Profile</span>
+          </v-card-title>
           <v-card-text>
             <v-layout row wrap>
               <v-flex xs12 md6>
