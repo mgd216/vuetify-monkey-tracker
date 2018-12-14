@@ -26,9 +26,23 @@ export default {
       installPrompt.prompt();
       installPrompt.userChoice.then(result => {
         if (result.outcome === "accepted") {
-          console.log("Install accepted!");
+          this.$swal({
+            toast: true,
+            position: "top-end",
+            type: "success",
+            title: "Install Success",
+            showConfirmButton: false,
+            timer: 3000
+          });
         } else {
-          console.log("Install denied!");
+          this.$swal({
+            toast: true,
+            position: "top-end",
+            type: "warning",
+            title: "Install Denied",
+            showConfirmButton: false,
+            timer: 3000
+          });
         }
       });
     };
