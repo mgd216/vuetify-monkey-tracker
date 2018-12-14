@@ -1,14 +1,18 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-import Auth from "@/store/modules/auth";
+import App from '@/store/modules/app'
+import Auth from '@/store/modules/auth'
+import Monkey from '@/store/modules/monkey'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 const store = new Vuex.Store({
-  modules: {
-    Auth
-  }
-});
+	modules: {
+		App,
+		Auth,
+		Monkey,
+	},
+})
 
-export default store;
+export default store
