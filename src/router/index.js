@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import firebase from 'firebase'
 
-import Home from '@/views/Home'
-import Login from '@/views/Login'
-import Map from '@/views/Map'
-import Profile from '@/views/Profile'
+const Home = () => import('@/views/Home')
+const Login = () => import('@/views/Login')
+const Map = () => import('@/views/Map')
+const Profile = () => import('@/views/Profile')
 
 import CreateMonkey from '@/views/monkey/CreateMonkey'
 
@@ -16,6 +16,10 @@ const router = new Router({
 	routes: [
 		{
 			path: '/',
+			redirect: '/login',
+		},
+		{
+			path: '/#',
 			redirect: '/login',
 		},
 		{
