@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app :clipped-left="clipped">
-    <v-toolbar-side-icon v-if="isLoggedIn" class="hidden-lg-and-up" @click.stop="showNavigation()"></v-toolbar-side-icon>
-    <v-btn icon @click.stop="toggleMiniVariant()">
+    <v-toolbar-side-icon v-if="isLoggedIn" @click.stop="showNavigation()"></v-toolbar-side-icon>
+    <v-btn icon v-if="isLoggedIn" @click.stop="toggleMiniVariant()">
       <fa-icon v-if="miniVariant" icon="chevron-right"/>
       <fa-icon v-else icon="chevron-left"/>
     </v-btn>

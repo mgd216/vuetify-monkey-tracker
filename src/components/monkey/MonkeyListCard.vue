@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-1">
+  <v-card class="ma-1" width="100%" max-width="300px">
     <v-card-title>
       <span class="title">Monkey List</span>
     </v-card-title>

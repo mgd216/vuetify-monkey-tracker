@@ -6,6 +6,7 @@ import './plugins'
 import './firebaseActions'
 
 import fb  from './firebaseConfig.js'
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
